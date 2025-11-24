@@ -1,0 +1,75 @@
+Unit tests for gravitational constant derivation from E8
+"""
+
+import pytest
+import numpy as np
+from src.e8_physics import E8ArithmeticUniverse
+
+class TestGravitationalConstant:
+    
+    def setup_method(self):
+        self.universe = E8ArithmeticUniverse(precision=50)
+    
+    def test_gravitational_constant_value(self):
+        """Test G calculation from E8 coherence"""
+        G_result = self.universe.compute_gravitational_constant()
+        G_predicted = G_result['value']
+        G_experimental = G_result['CODATA_2018']
+        
+        # Should match CODATA 2018 within 0.001%
+        relative_error = abs(G_predicted - G_experimental) / G_experimental
+        assert relative_error < 1e-5, f"G error: {relative_error*100:.6f}%"
+    
+    def test_gravitational_coupling(self):
+        """Test gravitational coupling calculation"""
+        alpha_grav = self.universe._compute_gravitational_coupling()
+        
+        # Should be approximately 0.0081
+        assert 0.0080 < alpha_grav < 0.0082
+        
+        # Verify the formula
+        expected = (1/(8 * np.pi)) * (248/3875)**2 * (1 + (5/3)/(24*np.pi**2))
+        assert abs(alpha_grav - expected) < 1e-10
+    
+    def test_planck_mass_relation(self):
+        """Test Planck mass derivation from E8"""
+        # Planck mass should relate to top quark mass via E8 golden ratio
+        m_top = 172.78e9 * 1.78266192e-36  # Top mass in kg
+        phi_e8 = float(self.universe.phi_e8)
+        alpha_grav = self.universe._compute_gravitational_coupling()
+        
+        # E8 coherence condition
+        m_planck_calculated = m_top * np.sqrt(phi_e8**126 * alpha_grav / (2 * np.pi))
+        m_planck_standard = np.sqrt(hbar * G / c)  # Standard definition
+        
+        relative_error = abs(m_planck_calculated - m_planck_standard) / m_planck_standard
+        assert relative_error < 1e-5
+    
+    def test_length_scale_consistency(self):
+        """Test consistency between length scale and G derivation"""
+        # Length scale used in Λ calculation
+        L = self.universe._compute_length_scale()
+        
+        # This should be consistent with G derivation
+        l_planck = np.sqrt(hbar * G / c**3)
+        phi_e8 = float(self.universe.phi_e8)
+        
+        L_expected = phi_e8**(-63) * l_planck
+        assert abs(L - L_expected) < 1e-45
+    
+    def test_complete_derivation_consistency(self):
+        """Test that all derivations are mathematically consistent"""
+        results = self.universe.verify_all_predictions()
+        
+        # All predictions should exist
+        assert 'gravitational_constant' in results
+        assert 'cosmological_constant' in results
+        assert 'fermion_masses' in results
+        assert 'gauge_couplings' in results
+        
+        # G should be within experimental bounds
+        G_predicted = results['gravitational_constant']['value']
+        assert 6.67e-11 < G_predicted < 6.68e-11
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v"])
