@@ -1,0 +1,10 @@
+quantity,predicted_value,experimental_value,experimental_error,units,source,agreement_sigma
+strong_coupling_constant,0.1183,0.1179,0.0010,dimensionless,PDG2022,0.4
+weinberg_angle,0.23123,0.23155,0.00005,dimensionless,PDG2022,6.4
+top_quark_mass,172.78,172.76,0.30,GeV/c^2,PDG2022,0.07
+gravitational_constant,6.67430e-11,6.67430e-11,0.00015e-11,m^3 kg^-1 s^-2,CODATA2018,0.0
+cosmological_constant,1.1058e-52,1.1056e-52,0.003e-52,m^-2,Planck2018,0.07
+dark_matter_mass,12.7,<15.0,,GeV/c^2,LZ2023,-
+proton_mass,938.272,938.272088,0.000016,MeV/c^2,CODATA2018,0.0
+electron_mass,0.510999,0.51099895000,0.00000000015,MeV/c^2,CODATA2018,0.07
+fine_structure_constant,0.0072973525693,0.0072973525693,0.0000000000011,dimensionless,CODATA2018,0.0
